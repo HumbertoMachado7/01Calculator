@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora</title>
+    <title>Calculadora Simple</title>
     <link rel="stylesheet" href="calculator.css">
 </head>
-<body>
+<body onkeydown="handleKeyPress(event)">
     <div class="calculator">
-        <div class="display">
-            <input type="text" id="result" readonly>
-        </div>
+        <input type="text" class="display" id="display" readonly>
         <div class="buttons">
             <button class="operator" onclick="appendOperator('+')">+</button>
             <button class="operator" onclick="appendOperator('-')">-</button>
@@ -19,7 +17,7 @@
             <button class="digit" onclick="appendNumber('7')">7</button>
             <button class="digit" onclick="appendNumber('8')">8</button>
             <button class="digit" onclick="appendNumber('9')">9</button>
-            <button class="operator" onclick="calculate()">=</button>
+            <button class="equals" onclick="calculate()">=</button>
             <button class="digit" onclick="appendNumber('4')">4</button>
             <button class="digit" onclick="appendNumber('5')">5</button>
             <button class="digit" onclick="appendNumber('6')">6</button>
@@ -28,7 +26,7 @@
             <button class="digit" onclick="appendNumber('2')">2</button>
             <button class="digit" onclick="appendNumber('3')">3</button>
             <button class="digit" onclick="appendNumber('0')">0</button>
-            <button class="digit" onclick="appendNumber('.')">.</button>
+            <button class="decimal" onclick="appendNumber('.')">.</button>
         </div>
     </div>
     <script src="calculator.js"></script>
