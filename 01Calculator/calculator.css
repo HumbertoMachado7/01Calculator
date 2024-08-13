@@ -15,7 +15,8 @@
 
 .buttons {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, 1fr); /* Create 4 equal columns */
+    grid-template-rows: repeat(5, 1fr);  /* Create 5 equal rows */
     gap: 5px;
 }
 
@@ -28,6 +29,11 @@ button {
 
 .operator {
     background-color: #ffa500; /* Orange for operators */
+    color: white;
+}
+
+.clear {
+    background-color: #f44336; /* Red for clear button */
     color: white;
 }
 
