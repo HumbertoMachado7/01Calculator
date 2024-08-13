@@ -1,84 +1,115 @@
 import { add, subtract, multiply, divide } from './operators.js';
 
+let displayValue = '0';
+let previousOperator = null;
+let previousOperand = null;
+
 const display = document.querySelector('.display');
-let currentInput = '0';
-let previousInput = '';
-let currentOperator = null;
 
 function updateDisplay() {
-    display.textContent = currentInput;
+    display.textContent = displayValue;
 }
 
-function clearDisplay() {
-    currentInput = '0';
-    previousInput = '';
-    currentOperator = null;
-    updateDisplay();
-}
-
-function handleDigitClick(event) {
-    const digit = event.target.dataset.digit;
-    if (currentInput === '0') {
-        currentInput = digit;
+function appendNumber(number) {
+    if (displayValue === '0') {
+        displayValue = number;
     } else {
-        currentInput += digit;
+        displayValue += number;
     }
     updateDisplay();
 }
 
-function handleOperatorClick(event) {
-    const operator = event.target.dataset.operator;
-    if (currentOperator !== null) {
+function appendOperator(operator) {
+    if (previousOperator !== null) {
         calculate();
     }
-    currentOperator = operator;
-    previousInput = currentInput;
-    currentInput = '';
+    previousOperator = operator;
+    previousOperand = parseFloat(displayValue);
+    displayValue = '0';
 }
 
 function calculate() {
-    const num1 = parseFloat(previousInput);
-    const num2 = parseFloat(currentInput);
-    switch (currentOperator) {
-        case '+':
-            currentInput = add(num1, num2).toString();
-            break;
-        case '-':
-            currentInput = subtract(num1, num2).toString();
-            break;
-        case '*':
-            currentInput = multiply(num1, num2).toString();
-            break;
-        case '/':
-            currentInput = divide(num1, num2).toString();
-            break;
+    const currentOperand = parseFloat(displayValue);
+    if (previousOperator === '+') {
+        displayValue = add(previousOperand, currentOperand).toString();
+    } else if (previousOperator === '-') {
+        displayValue = subtract(previousOperand, currentOperand).toString();
+    } else if (previousOperator === '*') {
+        displayValue = multiply(previousOperand, currentOperand).toString();
+    } else if (previousOperator === '/') {
+        displayValue = divide(previousOperand, currentOperand).toString();
     }
-    previousInput = '';
-    currentOperator = null;
+    previousOperator = null;
+    previousOperand = null;
     updateDisplay();
 }
 
-document.querySelectorAll('.digit').forEach(button => {
-    button.addEventListener('click', handleDigitClick);
-});
+function clearDisplay() {
+    displayValue = '0';
+    previousOperator = null;
+    previousOperand = null;
+    updateDisplay();
+}
 
-document.querySelectorAll('.operator').forEach(button => {
-    button.addEventListener('click', handleOperatorClick);
-});
+function backspace() {
+    displayValue = displayValue.slice(0, -1);
+    if (displayValue === '') {
+        displayValue = '0';
+    }
+    updateDisplay();
+}
 
-document.querySelector('.clear').addEventListener('click', clearDisplay);
+function appendDecimal() {
+    // Agregar un punto decimal solo si no hay uno ya en displayValue
+    if (!displayValue.includes('.')) {
+        displayValue += '.';
+        updateDisplay();
+    }
+}
 
 document.addEventListener('keydown', (event) => {
     const key = event.key;
-    if (/^[0-9.]$/.test(key)) {
-        handleDigitClick({ target: { dataset: { digit: key } } });
+    console.log(`Key pressed: ${key}`);
+    if (!isNaN(key) || key === '.') {
+        if (key === '.') {
+            appendDecimal();
+        } else {
+            appendNumber(key);
+        }
     } else if (key === '+' || key === '-' || key === '*' || key === '/') {
-        handleOperatorClick({ target: { dataset: { operator: key } } });
+        appendOperator(key);
     } else if (key === 'Enter') {
         calculate();
-    } else if (key === 'Backspace' || key === 'Delete') {
+    } else if (key === 'Backspace') {
+        backspace();
+    } else if (key === 'Delete') {
         clearDisplay();
     }
 });
 
-updateDisplay();
+document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.buttons button');
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const buttonText = button.textContent.trim();
+            console.log(`Button clicked: ${buttonText}`);
+            if (!isNaN(buttonText) || buttonText === '.') {
+                if (buttonText === '.') {
+                    appendDecimal();
+                } else {
+                    appendNumber(buttonText);
+                }
+            } else if (buttonText === '+' || buttonText === '-' || buttonText === '*' || buttonText === '/') {
+                appendOperator(buttonText);
+            } else if (buttonText === '=') {
+                calculate();
+            } else if (buttonText === 'C') {
+                clearDisplay();
+            } else if (buttonText === '←') {
+                backspace();
+            }
+        });
+    });
+
+    updateDisplay();
+});
