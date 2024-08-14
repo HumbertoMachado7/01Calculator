@@ -49,6 +49,9 @@ function clearDisplay() {
     previousOperator = null;
     previousOperand = null;
     updateDisplay();
+
+    // Remove focus from any button
+    document.activeElement.blur();
 }
 
 function backspace() {
@@ -60,7 +63,6 @@ function backspace() {
 }
 
 function appendDecimal() {
-    // Agregar un punto decimal solo si no hay uno ya en displayValue
     if (!displayValue.includes('.')) {
         displayValue += '.';
         updateDisplay();
@@ -93,6 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', () => {
             const buttonText = button.textContent.trim();
             console.log(`Button clicked: ${buttonText}`);
+
+            // Remove focus from the clicked button
+            button.blur(); 
+
             if (!isNaN(buttonText) || buttonText === '.') {
                 if (buttonText === '.') {
                     appendDecimal();
