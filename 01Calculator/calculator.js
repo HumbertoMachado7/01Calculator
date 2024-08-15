@@ -10,13 +10,13 @@ const updateDisplay = () => display.textContent = displayValue;
 const handleNumberInput = number => {
   previousOperator === null && previousOperand !== null 
     ? (displayValue = number, previousOperand = null) 
-    : (displayValue = displayValue === '0' ? number : displayValue + number);
+    : displayValue === '0' ? displayValue = number : displayValue += number;
   updateDisplay();
 };
 
 const handleOperatorInput = operator => {
   const operand = parseFloat(displayValue);
-  isNaN(operand) ? (displayValue = 'Error', updateDisplay()) : (previousOperator ? calculate() : null);
+  isNaN(operand) ? (displayValue = 'Error', updateDisplay()) : previousOperator && calculate();
   previousOperator = operator;
   previousOperand = operand;
   displayValue = '0';
@@ -24,7 +24,11 @@ const handleOperatorInput = operator => {
 
 const calculate = () => {
   const currentOperand = parseFloat(displayValue);
-  isNaN(previousOperand) || isNaN(currentOperand) ? (displayValue = 'Error', updateDisplay()) : null;
+  if (isNaN(previousOperand) || isNaN(currentOperand)) {
+    displayValue = 'Error';
+    updateDisplay();
+    return;
+  }
   switch (previousOperator) {
     case '+': displayValue = add(previousOperand, currentOperand).toString(); break;
     case '-': displayValue = subtract(previousOperand, currentOperand).toString(); break;
@@ -48,9 +52,7 @@ const handleBackspace = () => {
   updateDisplay();
 };
 
-const appendDecimal = () => {
-  !displayValue.includes('.') && (displayValue += '.', updateDisplay());
-};
+const appendDecimal = () => !displayValue.includes('.') && (displayValue += '.', updateDisplay());
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.buttons button').forEach(button => {
