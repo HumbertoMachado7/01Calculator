@@ -8,14 +8,25 @@ let previousOperand = null;
 const updateDisplay = () => { display.textContent = displayValue; };
 
 const handleOperation = (operator) => {
+  const operand = parseFloat(displayValue);
+  if (isNaN(operand)) {
+    displayValue = 'Error';
+    updateDisplay();
+    return;
+  }
   if (previousOperator) calculate();
   previousOperator = operator;
-  previousOperand = parseFloat(displayValue);
+  previousOperand = operand;
   displayValue = '0';
 };
 
 const calculate = () => {
   const currentOperand = parseFloat(displayValue);
+  if (isNaN(previousOperand) || isNaN(currentOperand)) {
+    displayValue = 'Error';
+    updateDisplay();
+    return;
+  }
   switch (previousOperator) {
     case '+': displayValue = add(previousOperand, currentOperand).toString(); break;
     case '-': displayValue = subtract(previousOperand, currentOperand).toString(); break;
@@ -70,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 const appendNumber = (number) => {
+  if (isNaN(number) && number !== '.') return; // Ignorar caracteres no válidos
   displayValue = displayValue === '0' ? number : displayValue + number;
   updateDisplay();
 };
